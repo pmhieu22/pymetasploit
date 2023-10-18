@@ -35,7 +35,7 @@ def list_function():
 
 @router.get('/module_information', summary="Get all asins belong to user")
 def list_module_exploit():
-    return {"data" :exploit.options, "description": exploit.description, "required": exploit.required}
+    return {"data" :exploit.options, "description": exploit.description, "required": exploit.required, "run_options": exploit.runoptions}
 
 @router.post('/run_exploit', summary="Thay doi option")
 async def run_module_exploit(exploit_option: Exploit):
@@ -54,7 +54,7 @@ async def create_control_command(command: RemoteCode):
             result = shell.run_with_output(command)
             if result:
                 lines_result = result.splitlines()
-                return lines_result
+                return {"result": lines_result, "command": command}
         return "Thuc hien cau lenh that bai"
         
 @router.post('/delete', summary="Stop shell")

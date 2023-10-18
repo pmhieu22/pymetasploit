@@ -1,7 +1,7 @@
 import { request } from "./request";
 
 export const metasploitApi = {
-  getOptions: () => {
+  getInformations: () => {
     return request({
       method: "GET",
       url: "/api/v1/module_information",
