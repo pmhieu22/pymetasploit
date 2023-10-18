@@ -46,7 +46,7 @@ const Metasploit = () => {
     onSubmit: async (value) => {
       try {
         const res = await metasploitApi.createExploit(value.rhost);
-        if (res.job_id) {
+        if (res.data.job_id) {
           openNotification({
             message: "Shell tấn công được tạo thành công!",
             type: "success",
@@ -114,7 +114,13 @@ const Metasploit = () => {
         </Text>
       </div>
       <div style={{ marginTop: 25 }}>
-        <Card title={<Text style={{ fontSize: 30 }}>Thông tin tấn công</Text>}>
+        <Card
+          style={{
+            boxShadow:
+              "rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px",
+          }}
+          title={<Text style={{ fontSize: 30 }}>Thông tin tấn công</Text>}
+        >
           <div style={{ marginBottom: 20 }}>
             <Title level={3} style={{ marginTop: 0 }}>
               Module tấn công
@@ -229,6 +235,10 @@ const Metasploit = () => {
         {showCommandControl ? (
           <div style={{ marginTop: 25 }}>
             <Card
+              style={{
+                boxShadow:
+                  "rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px",
+              }}
               title={<Text style={{ fontSize: 30 }}>Khai thác tạo shell</Text>}
             >
               <div
