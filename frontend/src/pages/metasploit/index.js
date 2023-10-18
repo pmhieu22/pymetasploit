@@ -44,10 +44,17 @@ const Metasploit = () => {
       rhost: "",
     },
     onSubmit: async (value) => {
-      const res = await metasploitApi.createExploit(value.rhost);
-      if (res.job_id) {
-        openNotification({ message: "Tao shell thanh cong", type: "success" });
-        setShowCommandControl(true);
+      try {
+        const res = await metasploitApi.createExploit(value.rhost);
+        if (res.job_id) {
+          openNotification({
+            message: "Shell tấn công được tạo thành công!",
+            type: "success",
+          });
+          setShowCommandControl(true);
+        }
+      } catch (error) {
+        openNotification({ message: "Lỗi!" });
       }
     },
   });
@@ -61,7 +68,7 @@ const Metasploit = () => {
       const res = await metasploitApi.getInformations();
       setModuleInfo(res);
     } catch (error) {
-      console.log("error", error);
+      openNotification({ message: "Lỗi!" });
     }
   };
 
@@ -74,7 +81,7 @@ const Metasploit = () => {
         }
       }
     } catch (error) {
-      console.log("error", error);
+      openNotification({ message: "Lỗi!" });
     }
   };
 
@@ -92,18 +99,25 @@ const Metasploit = () => {
           flexDirection: "column",
         }}
       >
-        <Text style={{ fontSize: 35, fontWeight: 500 }}>
-          Thu nghiem trang web kiem thu su dung metasploit
+        <Text
+          style={{
+            fontSize: 35,
+            fontWeight: 500,
+            marginBottom: 0,
+            paddingBotton: 5,
+          }}
+        >
+          Thử nghiệm trang web kiểm thử trên nền tảng metasploit
         </Text>
-        <Text type="secondary" style={{ fontSize: 25 }}>
-          Thu nghiem tan cong lo hong MS17_010 tren he dieu hanh windows
+        <Text type="secondary" style={{ fontSize: 20 }}>
+          Thử nghiệm tấn công lỗ hổng MS17_010 trên hệ điều hành Windows
         </Text>
       </div>
       <div style={{ marginTop: 25 }}>
-        <Card title={<Text style={{ fontSize: 30 }}>Thong tin tan cong</Text>}>
+        <Card title={<Text style={{ fontSize: 30 }}>Thông tin tấn công</Text>}>
           <div style={{ marginBottom: 20 }}>
             <Title level={3} style={{ marginTop: 0 }}>
-              Exploit Module
+              Module tấn công
             </Title>
             <Input
               style={{ maxWidth: 450 }}
@@ -113,7 +127,7 @@ const Metasploit = () => {
           </div>
           <div>
             <Title level={3} style={{ marginTop: 0 }}>
-              Thong tin ve module
+              Thông tin về module
             </Title>
             <Text>{moduleInfo?.description}</Text>
             <Form
@@ -128,41 +142,41 @@ const Metasploit = () => {
             >
               <Row gutter={24}>
                 <Col span={12}>
-                  <Form.Item label="Muc tieu tan cong">
+                  <Form.Item label="Mục tiêu tấn công">
                     <Input
                       name="rhost"
                       size="large"
-                      placeholder="Muc tieu tan cong"
+                      placeholder="Mục tiêu tấn công"
                       value={formik.values.rhost}
                       onChange={formik.handleChange}
                       allowClear
                     />
                   </Form.Item>
-                  <Form.Item label="Cong tan cong">
+                  <Form.Item label="Cổng tấn công">
                     <Input
                       name="CongTanCong"
                       size="large"
-                      placeholder="Cong tan cong"
+                      placeholder="Cổng tấn công"
                       value={moduleInfo?.run_options?.RPORT}
                       disabled
                       allowClear
                     />
                   </Form.Item>
-                  <Form.Item label="Thoi gian ngat tan cong">
+                  <Form.Item label="Thời gian ngắt tấn công">
                     <Input
                       name="thoigianngat"
                       size="large"
-                      placeholder="Thoi gian ngat tan cong"
+                      placeholder="Thời gian ngắt tấn công"
                       value={moduleInfo?.run_options?.ConnectTimeout}
                       disabled
                       allowClear
                     />
                   </Form.Item>
-                  <Form.Item label="Gioi han tan cong">
+                  <Form.Item label="Giới hạn tấn công">
                     <Input
                       name="soluongtancong"
                       size="large"
-                      placeholder="Gioi han tan cong"
+                      placeholder="Giới hạn tấn công"
                       value={moduleInfo?.run_options?.MaxExploitAttempts}
                       disabled
                       allowClear
@@ -170,31 +184,31 @@ const Metasploit = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Phien ban SSL">
+                  <Form.Item label="Phiên bản SSL">
                     <Input
                       name="phienbanssl"
                       size="large"
-                      placeholder="Phien ban SSL"
+                      placeholder="Phiên bản SSL"
                       value={moduleInfo?.run_options?.SSLVersion}
                       disabled
                       allowClear
                     />
                   </Form.Item>
-                  <Form.Item label="Xac dinh muc tieu">
+                  <Form.Item label="Xác định mục tiêu">
                     <Input
                       name="xacdinhmuctieu"
                       size="large"
-                      placeholder="Xac dinh muc tieu"
+                      placeholder="Xác định mục tiêu"
                       value={moduleInfo?.run_options?.VERIFY_TARGET}
                       disabled
                       allowClear
                     />
                   </Form.Item>
-                  <Form.Item label="Tien trinh tan cong">
+                  <Form.Item label="Tiến trình tấn công">
                     <Input
                       name="tientrinhtancong"
                       size="large"
-                      placeholder="Tien trinh tan cong"
+                      placeholder="Tiến trình tấn công"
                       value={moduleInfo?.run_options?.ProcessName}
                       disabled
                       allowClear
@@ -207,7 +221,7 @@ const Metasploit = () => {
                 onClick={formik.handleSubmit}
                 style={{ float: "right" }}
               >
-                Tao tan cong
+                Tạo tấn công
               </Button>
             </Form>
           </div>
@@ -215,7 +229,7 @@ const Metasploit = () => {
         {showCommandControl ? (
           <div style={{ marginTop: 25 }}>
             <Card
-              title={<Text style={{ fontSize: 30 }}>Khai thac tao shell</Text>}
+              title={<Text style={{ fontSize: 30 }}>Khai thác tạo shell</Text>}
             >
               <div
                 style={{
@@ -229,7 +243,7 @@ const Metasploit = () => {
                 }}
               >
                 <span style={{ color: "white", fontSize: 18, fontWeight: 600 }}>
-                  Cau lenh: {shellResult?.command}
+                  Câu lệnh: {shellResult?.command}
                 </span>
                 <br />
                 <span style={{ color: "white" }}>
@@ -253,7 +267,7 @@ const Metasploit = () => {
               <Flex gap={10} style={{ marginTop: 25 }}>
                 <Input
                   size="large"
-                  placeholder="Cau lenh tan cong"
+                  placeholder="Câu lệnh tấn công"
                   value={command}
                   onChange={handleChangeCommand}
                 />
@@ -264,7 +278,7 @@ const Metasploit = () => {
                     handleRequestCommand(command);
                   }}
                 >
-                  Gui cau lenh
+                  Gửi câu lệnh
                 </Button>
               </Flex>
             </Card>
